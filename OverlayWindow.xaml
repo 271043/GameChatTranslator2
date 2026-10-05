@@ -1,0 +1,81 @@
+<Window x:Class="GameChatTranslator.UI.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="CanResizeWithGrip"
+        Title="คำแปล"
+        Icon="app.ico">
+
+    <Border x:Name="Shell"
+            Background="#D9101216"
+            BorderBrush="{StaticResource Line}"
+            BorderThickness="1"
+            CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- แถบหัว ลากย้ายได้ ซ่อนเมื่อล็อก -->
+            <Border x:Name="TitleBar"
+                    Grid.Row="0"
+                    Background="{StaticResource SurfaceEdge}"
+                    CornerRadius="7,7,0,0"
+                    Padding="10,4,4,4"
+                    MouseLeftButtonDown="TitleBar_Drag">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse x:Name="StatusDot" Width="8" Height="8" Margin="0,0,7,0"
+                                 Fill="{StaticResource InkMuted}"/>
+                        <TextBlock x:Name="StatusText" Text="กำลังเชื่อมต่อ AI…"
+                                   Foreground="{StaticResource InkMuted}" FontSize="11.5"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBlock x:Name="ModeLabel"
+                                   Foreground="{StaticResource Accent}" FontSize="11"
+                                   VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <Button Content="ล็อก" Click="Lock_Click"
+                                Padding="9,3" FontSize="11" Margin="0,0,2,0"/>
+                        <Button Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets"
+                                Style="{StaticResource CloseCaptionButton}"
+                                Width="30" Height="24" FontSize="9"
+                                Click="Close_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <ScrollViewer x:Name="Scroller"
+                              VerticalScrollBarVisibility="Hidden"
+                              Padding="12,10,12,12">
+                    <StackPanel x:Name="Lines"/>
+                </ScrollViewer>
+
+                <!-- อนิเมชันโหลดกลางช่อง โผล่ทับตอนกำลังสแกน/แปล ซ่อนอยู่ปกติ -->
+                <StackPanel x:Name="LoadingPanel"
+                            Visibility="Collapsed"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="LoadingSpinner"
+                               Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="28"
+                               Foreground="{StaticResource Accent}"
+                               HorizontalAlignment="Center"
+                               RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <RotateTransform x:Name="LoadingSpinnerRotate" Angle="0"/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock x:Name="LoadingText"
+                               Text="กำลังสแกน…"
+                               Foreground="{StaticResource InkMuted}" FontSize="12.5"
+                               HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

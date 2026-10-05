@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>GameChatTranslator</AssemblyName>
+    <RootNamespace>GameChatTranslator</RootNamespace>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
+
+    <!-- OCR: PaddleOCR รันบน CPU (Mkldnn) ไม่แย่ง VRAM กับ Ollama/เกม -->
+    <PackageReference Include="Sdcb.PaddleInference" Version="3.3.1" />
+    <PackageReference Include="Sdcb.PaddleInference.runtime.win64.mkl" Version="3.3.1.70" />
+    <PackageReference Include="Sdcb.PaddleOCR" Version="3.3.1" />
+    <PackageReference Include="Sdcb.PaddleOCR.Models.Local" Version="3.3.1" />
+    <!-- ต้องระบุตรง ๆ เพราะ Local 3.3.1 อ้างถึง LocalV5 แบบช่วงเวอร์ชันกว้าง แล้วดันได้ 3.0.0 ที่ไม่มีโมเดลเกาหลีฝังมา -->
+    <PackageReference Include="Sdcb.PaddleOCR.Models.LocalV5" Version="3.3.1" />
+    <PackageReference Include="OpenCvSharp4" Version="4.13.0.20260627" />
+    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.13.0.20260627" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.13.0.20260627" />
+
+    <!-- Windows Graphics Capture ต้องใช้ D3D11 interop -->
+    <PackageReference Include="Vortice.Direct3D11" Version="3.6.2" />
+    <PackageReference Include="Vortice.DXGI" Version="3.6.2" />
+  </ItemGroup>
+
+</Project>

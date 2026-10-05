@@ -1,0 +1,147 @@
+<Window x:Class="GameChatTranslator.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="ตัวแปลแชตเกม — เกาหลี → ไทย"
+        Icon="app.ico"
+        Width="380" SizeToContent="Height"
+        Background="{StaticResource Surface}"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize">
+
+    <shell:WindowChrome.WindowChrome>
+        <!-- ไตเติลบาร์กำหนดเอง ให้หน้าตาแบบ Windows 11 (แถบบางๆ ปุ่มย่อ/ปิดแบบแบน)
+             แต่ยังได้ resize/snap/เงาหน้าต่างจากระบบตามปกติ เพราะไม่ได้ปิด Aero frame ทั้งหมด -->
+        <shell:WindowChrome CaptionHeight="32"
+                             GlassFrameThickness="0"
+                             CornerRadius="8"
+                             UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>  <!-- ไตเติลบาร์ -->
+            <RowDefinition Height="Auto"/>  <!-- เนื้อหา -->
+        </Grid.RowDefinitions>
+
+        <!-- ไตเติลบาร์ -->
+        <Grid Grid.Row="0" Background="{StaticResource SurfaceEdge}">
+            <TextBlock Text="ตัวแปลแชตเกม — เกาหลี → ไทย"
+                       Foreground="{StaticResource InkMuted}" FontSize="11.5"
+                       VerticalAlignment="Center" Margin="14,0,0,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <Button Content="&#xE921;" FontFamily="Segoe MDL2 Assets"
+                        Style="{StaticResource CaptionButton}" Click="Minimize_Click"/>
+                <Button Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets"
+                        Style="{StaticResource CloseCaptionButton}" Click="Close_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- เนื้อหา: เหลือแค่ปุ่มควบคุมหลัก ตัวแชต/คำแปลไปโผล่ที่หน้าต่างคำแปลลอยแทน -->
+        <Grid Grid.Row="1" Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- ขั้นที่ 1 -->
+                <RowDefinition Height="Auto"/>  <!-- ขั้นที่ 2 -->
+                <RowDefinition Height="Auto"/>  <!-- แปลบางส่วนทันที -->
+                <RowDefinition Height="Auto"/>  <!-- ลิงก์รอง -->
+                <RowDefinition Height="Auto"/>  <!-- แถบสถานะ -->
+            </Grid.RowDefinitions>
+
+            <!-- ขั้นที่ 1: เลือกกรอบแชต (secondary action) -->
+            <Button Grid.Row="0" x:Name="SelectRegionButton" Click="SelectRegion_Click"
+                    HorizontalContentAlignment="Stretch" Padding="14,13" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Width="34" Height="34" CornerRadius="7"
+                            Background="#33FFFFFF" Margin="0,0,12,0">
+                        <TextBlock Text="&#xE7A8;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                   Foreground="{StaticResource Ink}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="เลือกกรอบแชต" FontSize="13.5" FontWeight="SemiBold"/>
+                        <TextBlock Text="ลากคลุมช่องแชตในเกม โปรแกรมจำให้เอง"
+                                   FontSize="11" Foreground="{StaticResource InkMuted}" Margin="0,2,0,0"
+                                   TextWrapping="Wrap" LineHeight="14"/>
+                    </StackPanel>
+                </Grid>
+            </Button>
+
+            <!-- ขั้นที่ 2: เริ่ม/หยุด ปุ่มเดียว สลับสถานะ+สีเอง (Accent ตอนว่าง / แดงตอนกำลังแปล) -->
+            <Button Grid.Row="1" x:Name="ToggleButton" Click="Toggle_Click"
+                    Style="{StaticResource AccentButton}"
+                    HorizontalContentAlignment="Stretch" Padding="14,13" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Width="34" Height="34" CornerRadius="7"
+                            Background="#26000000" Margin="0,0,12,0">
+                        <TextBlock x:Name="ToggleIcon" Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock x:Name="ToggleTitle" Text="เริ่มแปล" FontSize="13.5" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="ToggleSubtitle" Text="กดแล้วใช้ Ctrl+1 เพื่อสแกนแชตทีละครั้ง"
+                                   FontSize="11" Opacity="0.75" Margin="0,2,0,0"
+                                   TextWrapping="Wrap" LineHeight="14"/>
+                    </StackPanel>
+                </Grid>
+            </Button>
+
+            <!-- แปลบางส่วนทันที: กด Ctrl+2 เปิดตัวลากกรอบ กด Ctrl+2 อีกครั้งเพื่อแปลกรอบนั้นทีเดียว -->
+            <Button Grid.Row="2" x:Name="PartialButton" Click="Partial_Click"
+                    HorizontalContentAlignment="Stretch" Padding="14,13" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Width="34" Height="34" CornerRadius="7"
+                            Background="#33FFFFFF" Margin="0,0,12,0">
+                        <TextBlock Text="&#xE7E6;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                   Foreground="{StaticResource Ink}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="แปลบางส่วนทันที" FontSize="13.5" FontWeight="SemiBold"/>
+                        <TextBlock Text="กด Ctrl+2 แล้วลากกรอบคลุมบรรทัด ปล่อยเมาส์เพื่อแปล"
+                                   FontSize="11" Foreground="{StaticResource InkMuted}" Margin="0,2,0,0"
+                                   TextWrapping="Wrap" LineHeight="14"/>
+                    </StackPanel>
+                </Grid>
+            </Button>
+
+            <!-- ลิงก์รอง -->
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="1,6,0,0">
+                <TextBlock Text="เปิดหน้าต่างคำแปลอีกครั้ง" Foreground="{StaticResource InkMuted}"
+                           FontSize="10.5" Cursor="Hand" TextDecorations="Underline"
+                           MouseLeftButtonUp="Overlay_Click"/>
+                <TextBlock Text="   ·   " Foreground="{StaticResource InkMuted}" FontSize="10.5"/>
+                <TextBlock Text="ปลดล็อกหน้าต่างคำแปล" Foreground="{StaticResource InkMuted}"
+                           FontSize="10.5" Cursor="Hand" TextDecorations="Underline"
+                           MouseLeftButtonUp="Unlock_Click"
+                           ToolTip="กดตรงนี้ถ้ากดล็อกไปแล้วปุ่มลัด Ctrl+Shift+L ใช้ไม่ได้"/>
+            </StackPanel>
+
+            <!-- แถบสถานะ: ข้อความสั้นๆ เข้าใจง่าย -->
+            <TextBlock Grid.Row="4" x:Name="StatusText"
+                       Text="พร้อมใช้งาน"
+                       Foreground="{StaticResource InkMuted}"
+                       FontSize="10.5" Margin="2,10,0,0"
+                       TextWrapping="Wrap"/>
+        </Grid>
+    </Grid>
+</Window>
